@@ -134,7 +134,8 @@ PROJECT is the project name."
 
 (defun magit-circleci--reponame ()
   "Get the name of the current repo."
-  (file-name-nondirectory (directory-file-name (magit-toplevel))))
+  ;; This should be set in .dir-locals.el
+  (and (boundp 'magit-circleci-repo-name) magit-circleci-repo-name))
 
 (defun magit-circleci--repo-has-config ()
   "Look if current repo has a circle config."
