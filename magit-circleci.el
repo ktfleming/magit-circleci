@@ -263,14 +263,14 @@ BUILDS are the circleci builds."
   (magit-add-section-hook 'magit-status-sections-hook #'magit-circleci--section
                           'magit-insert-staged-changes 'append)
   (transient-append-suffix 'magit-dispatch "%"
-    '("\"" "CircleCI" circleci-transient ?%))
+    '("#" "CircleCI" circleci-transient ?%))
   (with-eval-after-load 'magit-mode
-    (define-key magit-mode-map "\"" #'circleci-transient)))
+    (define-key magit-mode-map "#" #'circleci-transient)))
 
 (defun magit-circleci--deactivate ()
   "Remove the circleci section and the transient."
   (remove-hook 'magit-status-sections-hook #'magit-circleci--section)
-  (transient-remove-suffix 'magit-dispatch "\""))
+  (transient-remove-suffix 'magit-dispatch "#"))
 
 ;;;###autoload
 (define-minor-mode magit-circleci-mode
