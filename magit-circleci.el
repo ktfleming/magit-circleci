@@ -93,8 +93,9 @@ ARGS is the url arguments."
         (url-request-method method)
         (url-request-extra-headers '(("Accept" . "application/json"))))
     (with-current-buffer (url-retrieve-synchronously url)
+      (set-buffer-multibyte t)
       (goto-char url-http-end-of-headers)
-      (json-read)))) ;; TODO: utf-8 support
+      (json-read))))
 
 (defun magit-circleci--projects ()
   "Get all the projects from CircleCI."
