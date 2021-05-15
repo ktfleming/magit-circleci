@@ -113,6 +113,7 @@ PROJECT is the project name."
                             (assoc 'build_url x)
                             (assoc 'build_num x)
                             (assoc 'branch x)
+                            (assoc 'start_time x)
                             (assoc 'workflow_id (assoc 'workflows x))
                             (assoc 'job_name (assoc 'workflows x))
                             (assoc 'workflow_name (assoc 'workflows x))))
@@ -225,11 +226,16 @@ BUILD is the build object."
   "Insert the builds as workflows.
 
 BUILDS are the circleci builds."
-  (let ((name (cdr (assoc 'workflow_name (nth 1 builds))))
-        (subject (cdr (assoc 'subject (nth 1 builds))))
-        (branch (cdr (assoc 'branch (nth 1 builds)))))
+  (let* ((name (cdr (assoc 'workflow_name (nth 1 builds))))
+         (subject (cdr (assoc 'subject (nth 1 builds))))
+         (branch (cdr (assoc 'branch (nth 1 builds))))
+         (start-time (cdr (assoc 'start_time (nth 1 builds))))
+         (formatted-start-time (if start-time (format-time-string "%Y-%m-%d %H:%M" (date-to-time start-time)) ""))
+         (used-width (+ 3 (string-width (concat branch subject formatted-start-time))))
+         (available-width (- (window-total-width) used-width))
+         (padding-spaces (make-string available-width 32))) ;; 32 = space character
     (magit-insert-section (workflow)
-      (magit-insert-heading (propertize branch 'face 'font-lock-comment-face) " " subject)
+      (magit-insert-heading (propertize branch 'face 'magit-dimmed) " " subject padding-spaces (propertize formatted-start-time 'face 'magit-dimmed))
       (dolist (elt (cdr builds))
         (magit-circleci--insert-build elt)))))
 
