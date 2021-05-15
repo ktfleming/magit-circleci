@@ -208,6 +208,22 @@ DATA is the circleci data."
       (browse-url
        (alist-get 'build_url (magit-circleci--find-build repo build-num))))))
 
+(defface magit-circleci-success-face
+  '((t :inherit success :weight normal))
+  "Face for CircleCI builds with 'success' status.")
+
+(defface magit-circleci-failed-face
+  '((t :inherit error :weight normal))
+  "Face for CircleCI builds with 'failed' status.")
+
+(defface magit-circleci-number-face
+  '((t :inherit magit-filename :slant italic))
+  "Face for the CircleCI build number.")
+
+(defface magit-circleci-job-face
+  '((t :inherit magit-filename))
+  "Face for the CircleCI job names.")
+
 (defun magit-circleci--insert-build (build)
   "Insert current build.
 
@@ -220,16 +236,16 @@ BUILD is the build object."
        (magit-insert-heading
          ;; CircleCI statuses, from https://circleci.com/docs/api/#single-job:
          ;; :retried, :canceled, :infrastructure_fail, :timedout, :not_run, :running, :failed, :queued, :scheduled, :not_running, :no_tests, :fixed, :success
-         (let ((status-face (cond ((equal status "success") 'success)
-                                  ((equal status "fixed") 'success)
-                                  ((equal status "failed") 'error)
+         (let ((status-face (cond ((equal status "success") 'magit-circleci-success-face)
+                                  ((equal status "fixed") 'magit-circleci-success-face)
+                                  ((equal status "failed") 'magit-circleci-failed-face)
                                   ((equal status "canceled") 'magit-dimmed)
                                   ((equal status "not_run") 'magit-dimmed)
                                   ((equal status "running") 'highlight)
                                   ((equal status "queued") 'shadow)
                                   (t 'warning))))
-           (concat (propertize (format "%s %s" num status) 'face status-face)
-                   (format " %s\n" (cdr (assoc 'job_name build))))))))))
+           (concat (propertize (format "%s " num) 'face 'magit-circleci-number-face) (propertize (format "%s" status) 'face status-face)
+                   (propertize (format " %s\n" (cdr (assoc 'job_name build))) 'face 'magit-circleci-job-face))))))))
 
 (defun magit-circleci--insert-workflow (builds)
   "Insert the builds as workflows.
@@ -241,7 +257,7 @@ BUILDS are the circleci builds."
          (start-time (cdr (assoc 'start_time (nth 1 builds))))
          (formatted-start-time (if start-time (format-time-string "%Y-%m-%d %H:%M" (date-to-time start-time)) "")))
     (magit-insert-section (workflow)
-      (magit-insert-heading (propertize branch 'face 'magit-branch-remote) " " subject " " (propertize formatted-start-time 'face 'magit-dimmed))
+      (magit-insert-heading (propertize branch 'face 'magit-dimmed) " " subject " " (propertize formatted-start-time 'face 'magit-log-date))
       (dolist (elt (cdr builds))
         (magit-circleci--insert-build elt)))))
 
