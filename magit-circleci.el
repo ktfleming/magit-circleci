@@ -275,7 +275,7 @@ BUILDS are the circleci builds."
                         (cons (magit-circleci--reponame)
                               (magit-circleci--read-cache-file))))))
     (when builds
-      (magit-insert-section (root)
+      (magit-insert-section (circleci)
         (magit-insert-heading (propertize "CircleCI" 'face 'magit-section-heading))
         (dolist (elt (magit-circleci--group-workflows (cdr builds)))
           (magit-circleci--insert-workflow elt))
