@@ -218,9 +218,18 @@ BUILD is the build object."
     (magit-section-hide
      (magit-insert-section (circleci)
        (magit-insert-heading
-         (concat (propertize (format "%s" num) 'face
-                             (if (equal status "success") 'success 'error))
-                 (format " %s\n" (cdr (assoc 'job_name build)))))))))
+         ;; CircleCI statuses, from https://circleci.com/docs/api/#single-job:
+         ;; :retried, :canceled, :infrastructure_fail, :timedout, :not_run, :running, :failed, :queued, :scheduled, :not_running, :no_tests, :fixed, :success
+         (let ((status-face (cond ((equal status "success") 'success)
+                                  ((equal status "fixed") 'success)
+                                  ((equal status "failed") 'error)
+                                  ((equal status "canceled") 'magit-dimmed)
+                                  ((equal status "not_run") 'magit-dimmed)
+                                  ((equal status "running") 'highlight)
+                                  ((equal status "queued") 'shadow)
+                                  (t 'warning))))
+           (concat (propertize (format "%s %s" num status) 'face status-face)
+                   (format " %s\n" (cdr (assoc 'job_name build))))))))))
 
 (defun magit-circleci--insert-workflow (builds)
   "Insert the builds as workflows.
