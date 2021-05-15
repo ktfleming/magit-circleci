@@ -202,7 +202,7 @@ DATA is the circleci data."
   "Browse build under cursor."
   (interactive)
   (let ((build-num (save-excursion (beginning-of-line)
-                                   (number-at-point)))
+                                   (string-to-number (substring (car (split-string (thing-at-point 'line t))) 1))))
         (repo (magit-circleci--reponame)))
     (when build-num
       (browse-url
@@ -244,7 +244,7 @@ BUILD is the build object."
                                   ((equal status "running") 'highlight)
                                   ((equal status "queued") 'shadow)
                                   (t 'warning))))
-           (concat (propertize (format "%s " num) 'face 'magit-circleci-number-face) (propertize (format "%s" status) 'face status-face)
+           (concat (propertize (format "#%s " num) 'face 'magit-circleci-number-face) (propertize (format "%s" status) 'face status-face)
                    (propertize (format " %s\n" (cdr (assoc 'job_name build))) 'face 'magit-circleci-job-face))))))))
 
 (defun magit-circleci--insert-workflow (builds)
