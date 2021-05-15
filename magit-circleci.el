@@ -239,12 +239,9 @@ BUILDS are the circleci builds."
          (subject (cdr (assoc 'subject (nth 1 builds))))
          (branch (cdr (assoc 'branch (nth 1 builds))))
          (start-time (cdr (assoc 'start_time (nth 1 builds))))
-         (formatted-start-time (if start-time (format-time-string "%Y-%m-%d %H:%M" (date-to-time start-time)) ""))
-         (used-width (+ 3 (string-width (concat branch subject formatted-start-time))))
-         (available-width (- (window-total-width) used-width))
-         (padding-spaces (make-string available-width 32))) ;; 32 = space character
+         (formatted-start-time (if start-time (format-time-string "%Y-%m-%d %H:%M" (date-to-time start-time)) "")))
     (magit-insert-section (workflow)
-      (magit-insert-heading (propertize branch 'face 'magit-branch-remote) " " subject padding-spaces (propertize formatted-start-time 'face 'magit-dimmed))
+      (magit-insert-heading (propertize branch 'face 'magit-branch-remote) " " subject " " (propertize formatted-start-time 'face 'magit-dimmed))
       (dolist (elt (cdr builds))
         (magit-circleci--insert-build elt)))))
 
