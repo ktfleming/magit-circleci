@@ -108,8 +108,11 @@ ARGS is the url arguments."
 VCS-TYPE is the csv type.
 USERNAME is the username.
 PROJECT is the project name."
-  (mapcar (lambda (x) (list (assoc 'status x) (assoc 'subject x)
-                            (assoc 'build_url x) (assoc 'build_num x)
+  (mapcar (lambda (x) (list (assoc 'status x)
+                            (assoc 'subject x)
+                            (assoc 'build_url x)
+                            (assoc 'build_num x)
+                            (assoc 'branch x)
                             (assoc 'workflow_id (assoc 'workflows x))
                             (assoc 'job_name (assoc 'workflows x))
                             (assoc 'workflow_name (assoc 'workflows x))))
@@ -223,9 +226,10 @@ BUILD is the build object."
 
 BUILDS are the circleci builds."
   (let ((name (cdr (assoc 'workflow_name (nth 1 builds))))
-        (subject (cdr (assoc 'subject (nth 1 builds)))))
+        (subject (cdr (assoc 'subject (nth 1 builds))))
+        (branch (cdr (assoc 'branch (nth 1 builds)))))
     (magit-insert-section (workflow)
-      (magit-insert-heading (propertize (format "%s / %s" name subject) 'face 'magit-section-secondary-heading))
+      (magit-insert-heading (propertize branch 'face 'font-lock-comment-face) " " subject)
       (dolist (elt (cdr builds))
         (magit-circleci--insert-build elt)))))
 
@@ -244,7 +248,7 @@ BUILDS are the circleci builds."
                               (magit-circleci--read-cache-file))))))
     (when builds
       (magit-insert-section (root)
-        (magit-insert-heading (propertize "CircleCi" 'face 'magit-section-heading))
+        (magit-insert-heading (propertize "CircleCI" 'face 'magit-section-heading))
         (dolist (elt (magit-circleci--group-workflows (cdr builds)))
           (magit-circleci--insert-workflow elt))
         (insert "\n")))))
