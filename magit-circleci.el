@@ -244,7 +244,7 @@ BUILDS are the circleci builds."
          (available-width (- (window-total-width) used-width))
          (padding-spaces (make-string available-width 32))) ;; 32 = space character
     (magit-insert-section (workflow)
-      (magit-insert-heading (propertize branch 'face 'magit-dimmed) " " subject padding-spaces (propertize formatted-start-time 'face 'magit-dimmed))
+      (magit-insert-heading (propertize branch 'face 'magit-branch-remote) " " subject padding-spaces (propertize formatted-start-time 'face 'magit-dimmed))
       (dolist (elt (cdr builds))
         (magit-circleci--insert-build elt)))))
 
