@@ -241,7 +241,7 @@ BUILD is the build object."
                                   ((equal status "failed") 'magit-circleci-failed-face)
                                   ((equal status "canceled") 'magit-dimmed)
                                   ((equal status "not_run") 'magit-dimmed)
-                                  ((equal status "running") 'highlight)
+                                  ((equal status "running") 'magit-keyword)
                                   ((equal status "queued") 'shadow)
                                   (t 'warning))))
            (concat (propertize (format "#%s " num) 'face 'magit-circleci-number-face) (propertize (format "%s" status) 'face status-face)
