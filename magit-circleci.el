@@ -296,7 +296,7 @@ BUILDS are the circleci builds."
   "Add the circleci section and hook up the transient."
   (magit-add-section-hook 'magit-status-sections-hook #'magit-circleci--section
                           'magit-insert-staged-changes 'append)
-  (transient-append-suffix 'magit-dispatch "%"
+  (transient-append-suffix 'magit-dispatch '(0 -1 -1)
     '("#" "CircleCI" circleci-transient ?%))
   (with-eval-after-load 'magit-mode
     (define-key magit-mode-map "#" #'circleci-transient)))
